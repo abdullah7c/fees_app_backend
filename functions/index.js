@@ -1,5 +1,5 @@
 const {DataTypes} = require('sequelize')
-const { Groups, Students, Student_notification, Student_fees_history, Fees } = require('../models')
+const { Groups, Students, Student_notification, Student_fees_history, Fees, Users } = require('../models')
 
 Groups.hasMany(Students,{
     foriegnKey:{
@@ -41,4 +41,4 @@ Students.hasOne(Student_notification,{
 })
 Student_notification.belongsTo(Students)
 
-module.exports ={ Groups, Students, Student_notification, Student_fees_history, Fees }
+module.exports ={ Groups, Students, Student_notification, Student_fees_history, Fees, Users }
