@@ -77,20 +77,27 @@ app.get("/get-student-pay", async(req,res) => {
 })
 
 
-
-
 //  ================================    Edit Student Pay History    ===========================
 
-app.get("/edit-student-pay", async(req,res) => {
+app.post("/edit-student-pay", async(req,res) => {
 
     const { f_name, l_name, amount } = req.body
     try {
+        const student = await Students.findOne({
+            where:{first_name:f_name,last_name:l_name},
+            attributes:['id'],
+        })
+        
+        await Student_fees_history.increment({paid_months: amount}, { where: { StudentId: student.id }})
+        
+        
+
         const result = await Students.findOne({
             where:{
                 first_name:f_name,
                 last_name:l_name
             },
-            attributes:['first_name','last_name'],
+            attributes:['id','first_name','last_name'],
             include:[
                 {
                     model:Student_fees_history,
@@ -104,16 +111,8 @@ app.get("/edit-student-pay", async(req,res) => {
                 }
             ]
         })
-        res.send(result)
-        //const fees = await Fees.findOne({ GroupId:student.GroupId })
-        //await Student_fees_history.increment({paid_months: 1}, { where: { StudentId: student.id }})
-        //const fees_history = await Student_fees_history.findOne({where:{StudentId:student.id}})
 
-        // if(student==null){
-        //     res.send("Record Not Found")
-        // }else{
-        //     res.send(result)
-        // }
+        res.send(result)
 
     } catch (error) {
         res.send(error)
@@ -216,22 +215,22 @@ app.post("/adduser", verify, async(req,res) => {
     }
 })
 
-app.post("/student-insert", async(req,res) => {
+// app.post("/student-insert", async(req,res) => {
 
-    const groups = await Groups.findOne({where:{name:"Junior"}})
+//     const groups = await Groups.findOne({where:{name:"Junior"}})
 
-    await Students.create({
-        name:"Abdullah",
-        class:"bachelors",
-        dues:"cleared",
-        GroupId:groups.id
-    }).catch(err=>{
-        if(err){
-            console.log(err)
-        }
-    })
-    res.send('inserted')
-})
+//     await Students.create({
+//         name:"Abdullah",
+//         class:"bachelors",
+//         dues:"cleared",
+//         GroupId:groups.id
+//     }).catch(err=>{
+//         if(err){
+//             console.log(err)
+//         }
+//     })
+//     res.send('inserted')
+// })
 
 
 
